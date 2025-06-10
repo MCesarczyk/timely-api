@@ -1,0 +1,62 @@
+services:
+  api:
+    restart: always
+    container_name: timely-api-standalone
+    build:
+      context: .
+    image: timely-api-standalone:latest
+    ports:
+      - 4444:4000
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4000/api/health']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    expose:
+      - 4444
+    networks:
+      - timely_default
+
+  # timely-db:
+  #   restart: always
+  #   image: postgres:13
+  #   container_name: timely-db
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - db-data:/var/lib/postgresql/data
+  #   ports:
+  #     - 5433:5432
+  #   expose:
+  #     - 5433
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   container_name: timely-pgadmin4
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+  #     - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+  #     - PGADMIN_LISTEN_PORT=${PGADMIN_LISTEN_PORT}
+  #   ports:
+  #     - '8433:80'
+  #   volumes:
+  #     - pgadmin-data:/var/lib/pgadmin
+  #   depends_on:
+  #     - timely-db
+  #   expose:
+  #     - 8433
+
+volumes:
+  db-data:
+  pgadmin-data:
+    driver: local
+
+networks:
+  timely_default:
+    external: true
