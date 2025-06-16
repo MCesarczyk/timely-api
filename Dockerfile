@@ -34,8 +34,10 @@ RUN apk --no-cache add curl
 
 COPY --chown=node:node --from=builder /app/dist ./app
 COPY --chown=node:node --from=builder /app/node_modules ./node_modules
+COPY --chown=node:node --from=builder /app/prisma ./prisma
 
 USER node
 
 EXPOSE 4000
+
 CMD ["node", "app/src/main.js"]
