@@ -1,0 +1,30 @@
+services:
+  api-registry:
+    restart: always
+    image: ghcr.io/mcesarczyk/timely-api-standalone:latest # mcesarczyk/timely-api-standalone:latest
+    container_name: timely-api-standalone-registry
+    ports:
+      - 4445:4000
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4000/api/health']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    expose:
+      - 4445
+    networks:
+      - timely-api_default
+
+volumes:
+  db-data:
+  pgadmin-data:
+    driver: local
+
+networks:
+  timely-api_default:
+    external: true
