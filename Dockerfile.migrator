@@ -1,0 +1,11 @@
+FROM node:23.11.0-alpine3.21
+
+ARG DATABASE_URL
+
+ENV DATABASE_URL=${DATABASE_URL}
+
+COPY --chown=1000:1000 /prisma ./prisma
+
+USER 1000:1000
+
+CMD ["npx", "prisma", "migrate", "deploy", "--schema=./prisma/schema.prisma"]

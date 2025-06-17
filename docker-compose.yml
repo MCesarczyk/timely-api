@@ -4,7 +4,7 @@ services:
     container_name: timely-api-standalone
     build:
       context: .
-    image: timely-api-standalone:latest
+      dockerfile: Dockerfile
     ports:
       - 4444:4000
     env_file:
@@ -19,10 +19,19 @@ services:
       start_period: 30s
     depends_on:
       - timely-db
+      - migrator
     expose:
       - 4444
-    command: >
-      sh -c "npx prisma migrate deploy && node app/src/main.js"
+
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    container_name: timely-api-standalone-migrator
+    env_file:
+      - .env
+    depends_on:
+      - timely-db
 
   timely-db:
     restart: always

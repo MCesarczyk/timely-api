@@ -17,14 +17,51 @@ services:
       start_period: 30s
     expose:
       - 4445
-    networks:
-      - timely-api_default
+    depends_on:
+      - timely-db
+      - migrator
+
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    container_name: timely-api-standalone-migrator
+    env_file:
+      - .env
+    depends_on:
+      - timely-db
+
+  timely-db:
+    restart: always
+    image: postgres:13
+    container_name: timely-db
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5445:5432
+    expose:
+      - 5445
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: timely-pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - PGADMIN_LISTEN_PORT=${PGADMIN_LISTEN_PORT}
+    ports:
+      - '8445:80'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - timely-db
+    expose:
+      - 8445
 
 volumes:
   db-data:
   pgadmin-data:
     driver: local
-
-networks:
-  timely-api_default:
-    external: true
