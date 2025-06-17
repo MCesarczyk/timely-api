@@ -6,11 +6,11 @@ on:
       - main
   pull_request:
     # types: [closed]
-    branches:
-      - main
-    paths:
-      - 'Dockerfile.migrator'
-      - 'prisma/**'
+    # branches:
+    #   - main
+    # paths:
+    #   - 'Dockerfile.migrator'
+    #   - 'prisma/**'
   workflow_dispatch:
 
 env:
