@@ -6,7 +6,7 @@ services:
     ports:
       - 4445:4000
     env_file:
-      - .env.production
+      - .env
     environment:
       - NODE_ENV=production
     healthcheck:
@@ -22,9 +22,7 @@ services:
       - migrator
 
   migrator:
-    build:
-      context: .
-      dockerfile: Dockerfile.migrator
+    image: ghcr.io/mcesarczyk/timely-api-standalone-migrator:latest
     container_name: timely-api-standalone-migrator
     env_file:
       - .env
